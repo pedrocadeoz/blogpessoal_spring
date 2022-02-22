@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.generation.blogpessoal.model.Postagem;
 import com.generation.blogpessoal.repository.PostagemRepository;
+import com.generation.blogpessoal.repository.TemaRepository;
 
 @RestController
 @RequestMapping("/postagens")
@@ -27,6 +28,9 @@ public class PostagemController {
 	
 	@Autowired
 	private PostagemRepository postagemRepository;
+	
+	@Autowired
+	private TemaRepository temaRepository;
 	
 	@GetMapping
 	public ResponseEntity<List<Postagem>> getAll(){ 
@@ -54,17 +58,24 @@ public class PostagemController {
 	
 	@PostMapping
 	public ResponseEntity <Postagem> postPostagem (@Valid @RequestBody Postagem postagem){ 
+		if(temaRepository.existsById(postagem.getTema().getId()))
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(postagemRepository.save(postagem));
+		
+		return ResponseEntity.notFound().build();
 		
 	}
 	
 	@PutMapping
     public ResponseEntity<Postagem> putPostagem (@Valid @RequestBody Postagem postagem) {
         //return ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem));
-        return postagemRepository.findById(postagem.getId()) //procura pelo id 
-                .map(resposta -> ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem))) //realiza se resposta n for nulla
-                .orElse(ResponseEntity.notFound().build()); //realiza se a resposta for nulla
+        if(temaRepository.existsById(postagem.getTema().getId())) {
+		return postagemRepository.findById(postagem.getId()) //procura pelo id 
+                .map(resposta -> ResponseEntity.status(HttpStatus.OK)
+                .body(postagemRepository.save(postagem))) //realiza se resposta n for nulla
+                .orElse(ResponseEntity.notFound().build());//realiza se a resposta for nulla
+        }
+        	return ResponseEntity.notFound().build();
     }
 	
 	/*@DeleteMapping("/{id}")
@@ -74,7 +85,15 @@ public class PostagemController {
 	@DeleteMapping("/{id}")
     public ResponseEntity<Object> deletePostagem(@PathVariable Long id)
     {
-        if(postagemRepository.existsById(id))
+		
+		return postagemRepository.findById(id)
+				.map(resposta -> {
+						postagemRepository.deleteById(id);
+						return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+				})
+				
+				.orElse(ResponseEntity.notFound().build());
+       /* if(postagemRepository.existsById(id))
         {
 
              postagemRepository.deleteById(id);
@@ -82,10 +101,8 @@ public class PostagemController {
         }
         else
         {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();*/
             
         }
 		
 	}
-
-}
