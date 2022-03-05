@@ -21,8 +21,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank(message="O atributo é obrigatório")
+	@NotBlank(message="O atributo descrição é obrigatório")
 	private String descricao;
+	
+	@NotBlank(message="O atributo título é obrigatório ")
+	private String titulo;
 	
 	@OneToMany(mappedBy = "tema", cascade = CascadeType.ALL)
 	@JsonIgnoreProperties("tema")
@@ -30,6 +33,14 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 	public Long getId() {
 		return id;
+	}
+
+	public String getTitulo() {
+		return titulo;
+	}
+
+	public void setTitulo(String titulo) {
+		this.titulo = titulo;
 	}
 
 	public void setId(Long id) {
