@@ -21,13 +21,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotBlank(message="O atributo descrição é obrigatório")
+	@NotBlank(message="O atributo descrição é obrigatório e não é permitido deixar espaços em branco!")
 	private String descricao;
 	
 	@NotBlank(message="O atributo título é obrigatório ")
 	private String titulo;
 	
-	@OneToMany(mappedBy = "tema", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "tema", cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties("tema")
 	private List<Postagem> postagem;
 
