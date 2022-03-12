@@ -14,33 +14,22 @@ import javax.validation.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table (name = "tb_temas")
-	public  class Tema {
-	
+@Table(name = "tb_temas")
+public class Tema {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@NotBlank(message="O atributo descrição é obrigatório e não é permitido deixar espaços em branco!")
+
+	@NotBlank(message = "O atributo descrição é obrigatório e não é permitido deixar espaços em branco!")
 	private String descricao;
-	
-	@NotBlank(message="O atributo título é obrigatório ")
-	private String titulo;
-	
+
 	@OneToMany(mappedBy = "tema", cascade = CascadeType.REMOVE)
 	@JsonIgnoreProperties("tema")
 	private List<Postagem> postagem;
 
 	public Long getId() {
 		return id;
-	}
-
-	public String getTitulo() {
-		return titulo;
-	}
-
-	public void setTitulo(String titulo) {
-		this.titulo = titulo;
 	}
 
 	public void setId(Long id) {
@@ -62,7 +51,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 	public void setPostagem(List<Postagem> postagem) {
 		this.postagem = postagem;
 	}
-	
+
 	
 
 }
